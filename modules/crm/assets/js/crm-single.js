@@ -194,10 +194,10 @@
         },
 
         methods: {
-            fullName: function( value, item ) {
-                var link  = '<a href="' + item.details_url + '"><strong>' + item.first_name + ' '+ item.last_name + '</strong></a>';
-                return item.avatar.img + link;
-            },
+            // fullName: function( value, item ) {
+            //     var link  = '<a href="' + item.details_url + '"><strong>' + item.first_name + ' '+ item.last_name + '</strong></a>';
+            //     return item.avatar.img + link;
+            // },
 
             lifeStage: function( value, item ) {
                 return wpErpCrm.life_stages[value];

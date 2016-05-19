@@ -237,7 +237,8 @@ class Customer_Relationship {
         }
 
         wp_enqueue_script( 'erp-vuejs', false, [ 'jquery', 'erp-script' ], false, true );
-        wp_enqueue_script( 'erp-vue-table', WPERP_CRM_ASSETS . "/js/vue-table$suffix.js", array( 'erp-vuejs', 'jquery' ), date( 'Ymd' ), true );
+        wp_enqueue_script( 'erp-vue-table-partials-mixins', WPERP_CRM_ASSETS . "/js/vue-table-partials-mixins$suffix.js", array( 'erp-vuejs', 'jquery' ), date( 'Ymd' ), true );
+        wp_enqueue_script( 'erp-vue-table', WPERP_CRM_ASSETS . "/js/vue-table$suffix.js", array( 'erp-vue-table-partials-mixins' ), date( 'Ymd' ), true );
         wp_enqueue_script( 'erp-vue-list-animation', WPERP_CRM_ASSETS . "/js/vue-animated-list.js", array( 'erp-vuejs', 'jquery' ), date( 'Ymd' ), true );
 
         if ( 'crm_page_erp-sales-customers' == $hook ) {

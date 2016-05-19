@@ -83,7 +83,7 @@ Vue.component('vtable', {
                                     + '<template v-for="( i, field ) in fields">'
                                         + '<template v-if="(i==0 )">'
                                             + '<td v-if="hasCallback(field)" class="has-row-actions column-primary {{ field.name }} column-{{ field.name }}" data-colname="{{ field.title }}">'
-                                            + '<slot>{{{ callCallback(field, item ) }}}</slot>'
+                                            + '<partial :name="primaryColumnPartial"></partial>'
                                             + '<template v-if="hasRowAction()">'
                                                 + '<div class="row-actions">'
                                                     + '<template v-for="( rowActionIndex, rowAction ) in itemRowActions">'
@@ -192,6 +192,8 @@ Vue.component('vtable', {
                 +'</form>'
             +'</div><!-- .list-table-inner -->'
         +'</div><!-- .list-table-wrap -->',
+
+    mixins: [window.vtableMixins],
 
     props: {
         'wrapperClass': {
@@ -331,6 +333,10 @@ Vue.component('vtable', {
     },
 
     computed: {
+        primaryColumnPartial: function () {
+            return window.vtablePartials.primaryColumnPartial;
+        },
+
         sortIcon: function() {
             return this.sortOrder.direction == 'asc' ? this.ascendingIcon : this.descendingIcon
         },

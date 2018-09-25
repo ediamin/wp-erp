@@ -1,6 +1,7 @@
 <?php
 namespace WeDevs\ERP\CRM;
 
+use WeDevs\ERP\CRM\CRM_Settings_Custom_Contact_Subsection;
 use WeDevs\ERP\Framework\ERP_Settings_Page;
 
 /**
@@ -17,6 +18,7 @@ class CRM_Settings extends ERP_Settings_Page {
         $this->sections = $this->get_sections();
 
         add_action( 'erp_admin_field_listing_save_templates', [ $this, 'listing_save_templates' ] );
+        add_action( 'erp_admin_field_custom_contact_subsection', [ $this, 'custom_contact_subsection' ] );
     }
 
     /**
@@ -101,6 +103,10 @@ class CRM_Settings extends ERP_Settings_Page {
         $fields['contacts'][] = [
             'type' => 'sectionend',
             'id'   => 'script_styling_options'
+        ];
+
+        $fields['contacts'][] = [
+            'type' => 'custom_contact_subsection',
         ];
 
         $fields['templates'][] = [
@@ -347,5 +353,61 @@ class CRM_Settings extends ERP_Settings_Page {
         </td>
     </tr>
     <?php
+    }
+
+    public function custom_contact_subsection() {
+        ?>
+            <tr>
+                <td class="erp-settings-table-wrapper" colspan="2">
+                    <a href="<?php echo admin_url( 'admin.php?page=erp-settings&tab=erp-crm&section=contacts&sub_section=custom-contact-subsection'); ?>">Go to subsection</a>
+                </td>
+            </tr>
+        <?php
+    }
+
+    public function output( $section = false ) {
+        $current_section = isset( $_GET['sub_section'] ) ? sanitize_key( $_GET['sub_section'] ) : false;
+
+        if ( $current_section ) {
+            $sub_section = new CRM_Settings_Custom_Contact_Subsection();
+            $sub_section->admin_options();
+        } else {
+            parent::output();
+        }
+    }
+
+    function save( $section = false ) {
+        if ( isset( $_POST['_wpnonce']) && wp_verify_nonce( $_POST['_wpnonce'], 'erp-settings-nonce' ) ) {
+
+            $current_section = isset( $_GET['sub_section'] ) ? sanitize_key( $_GET['sub_section'] ) : false;
+
+            // saving individual email settings
+            if ( $current_section ) {
+                $sub_section = new CRM_Settings_Custom_Contact_Subsection();
+
+                $settings       = $sub_section->get_form_fields();
+                $update_options = array();
+
+                if ( $settings) {
+                    foreach ($settings as $field) {
+                        if ( ! isset( $field['id'] ) || ! isset( $_POST[ $field['id'] ] ) ) {
+                            continue;
+                        }
+
+                        $option_value = $this->parse_option_value( $field );
+
+                        if ( ! is_null( $option_value ) ) {
+                            $update_options[ $field['id'] ] = $option_value;
+                        }
+                    }
+                }
+
+                update_option( $sub_section->get_option_id(), $update_options );
+
+
+            } else {
+                parent::save();
+            }
+        }
     }
 }
